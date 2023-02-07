@@ -14,35 +14,38 @@ $.ajax({
     method: "GET"
 }).then(function(response) {
     console.log(response);
-    // console.log();
 
     let cityName = response.city.name;
 
-    // console.log(response.list[0].dt_txt);
-
     let todaysDate = response.list[0].dt_txt;
-
-    // console.log(response.list[0].main.temp);
 
     let tempKelv = response.list[0].main.temp;
     let celsius = (tempKelv - 273.15).toFixed(2);
-    // console.log(celsius);
-
-    // console.log(response.list[0].weather[0].description);
-    let weatherDescr = response.list[0].weather[0].description;
-
+    // let weatherDescr = response.list[0].weather[0].description;
     let wind = response.list[0].wind.speed;
     let humidity =  response.list[0].main.humidity;
-
-
+    
     const weatherToday = $("<div>")
 
-    weatherToday.text("Today's weather: " + cityName + " ("+ todaysDate + ") "  + "\nweather: "
-    +  weatherDescr + "\ntemp: " 
-    + celsius + "°c" + "\nwind speed: "
-    + wind + "KPH" + "\nhumidity: "
-    + humidity + "%"
-    );
+
+    let todayHeader = $("<h3>");
+    todayHeader.html(cityName + " ("+ todaysDate + ") ") //+ icon
+    weatherToday.append(todayHeader);
+    todayHeader.attr("id", "todayHeader")
+
+    let todayTemp = $("<p>");
+    todayTemp.text("Temp: " + celsius +  "°c");
+    weatherToday.append(todayTemp);
+
+    let todayWind = $("<p>");
+    todayWind.text("Wind speed: " + wind + "KPH");
+    weatherToday.append(todayWind);
+
+
+    let todayHumidity= $("<p>");
+    todayHumidity.text("Humidity: " + humidity + "%");
+    weatherToday.append(todayHumidity);
+
 
     todayWeather.append(weatherToday);
 
@@ -63,6 +66,14 @@ temp (c)
 wind (KPH)
 humidity (%)
 */
+
+
+    //ICONS
+    // let iconDiv = $(".weather-icon");
+    // let todayIcon = response.list[0].weather[0].icon;
+    // let iconURL = "https://openweathermap.org/img/wn/" + todayIcon + "@2x.png"
+    // iconDiv.html("<img src=" + iconURL + "/ >")
+
 
 
 

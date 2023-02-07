@@ -5,3 +5,8 @@
 #forecast-display {
     border: 2px solid black;
 }
+
+
+#todayHeader {
+    font-weight: 700;
+}
