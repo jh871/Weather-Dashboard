@@ -9,16 +9,7 @@ let day2 = moment().add(2, "days").format("D/MM/YYYY");
 let day3 = moment().add(3, "days").format("D/MM/YYYY");
 let day4 = moment().add(4, "days").format("D/MM/YYYY");
 let day5 = moment().add(5, "days").format("D/MM/YYYY");
-console.log(day1);
-console.log(day2);
-console.log(day3);
-console.log(day4);
-console.log(day5);
-
-
-
-
-
+//push these to array and move through them
 
 
 searchBtn.on("click", function(event) {
@@ -69,37 +60,39 @@ $.ajax({
 );
 })
 let forecast = $("#forecast");
+let fiveDayTitle = $("<h3>").addClass("fiveDayTitle");
+fiveDayTitle.text("5-Day Forecast:")
+todayWeather.after(fiveDayTitle);
+//add display flex to section forecast
 
+
+//need this on Click but okay!
 const days = [1, 2, 3, 4, 5]
 for (i = 0; i < days.length; i++) {
-    let forecastCard = $("<div>") //add class = card, width: 18rem
-        let cardBody = $("<div>") //add class card-body
-            let cardTitle = $("<h5>") //add class = card-title
+    let forecastCard = $("<div>").addClass("card").addClass("col"); //add class = card, width: 18rem
+        let cardBody = $("<div>").addClass("card-body"); //add class card-body
+            let cardTitle = $("<h5>").addClass("card-title"); //add class = card-title
             //let cardIcon = $("<img>")
-            let cardTemp =  $("<p>"); // class = card.text
-            let cardWind =  $("<p>")
-            let cardHumidity =  $("<p>")
+            let cardTemp =  $("<p>").addClass("card-text"); // class = card.text
+            let cardWind =  $("<p>").addClass("card-text");
+            let cardHumidity =  $("<p>").addClass("card-text");
 
             cardTitle.text("Date")
+            //card.html(icon)
             cardTemp.text("Temp: ")
             cardWind.text("Wind: ")
             cardHumidity.text("Humidity: ");
 
-
-
-
-
             cardBody.append(cardTitle);
             // cardBody.append(cardIcon)
             cardBody.append(cardTemp);
-            cardBody.append(cardTemp);
+            cardBody.append(cardWind);
             cardBody.append(cardHumidity);
         forecastCard.append(cardBody);
     forecast.append(forecastCard);
-
-
-
-}           
+}
+//.css("width", "9rem")
+//addClass("col")
 /*for hero weather:
 city (date) icon
 temp to fixed 2
