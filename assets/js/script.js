@@ -9,104 +9,113 @@ let day2 = moment().add(2, "days").format("D/MM/YYYY");
 let day3 = moment().add(3, "days").format("D/MM/YYYY");
 let day4 = moment().add(4, "days").format("D/MM/YYYY");
 let day5 = moment().add(5, "days").format("D/MM/YYYY");
-console.log(day1);
-console.log(day2);
-console.log(day3);
-console.log(day4);
-console.log(day5);
+//push these to array and move through them
 
 
 
-
-
-
-
+//end of first ajax, start second:
 searchBtn.on("click", function(event) {
-
     event.preventDefault();
-// cityName = searchInput.val
-
-
-
-
-
-let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=51.5073219&lon=-0.1276474&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5"
-
-$.ajax({
-    url: queryURL,
-    method: "GET"
-}).then(function(response) {
+    let citySearch = searchInput.val();
+    let lat = 0;
+    let long = 0;
+//geocoding 
+    let cityCoords = "https://api.openweathermap.org/geo/1.0/direct?q=" + citySearch + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5"
+    $.ajax({
+        url: cityCoords,
+        method: "GET"
+    }).then(function(response) {
     console.log(response);
+    lat = response[0].lat;
+    long = response[0].lon;
+    console.log(lat);
+    console.log(long);
+    // cityName = searchInput.val
+        
+    let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + long + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5";
 
-    let cityName = response.city.name;
-
-    let todaysDate = response.list[0].dt_txt;
-
-    let tempKelv = response.list[0].main.temp;
-    let celsius = (tempKelv - 273.15).toFixed(2);
-    // let weatherDescr = response.list[0].weather[0].description;
-    let wind = response.list[0].wind.speed;
-    let humidity =  response.list[0].main.humidity;
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function(response) {
+        console.log(response);
+        console.log(citySearch);
+        let cityName = response.city.name;
     
-    const weatherToday = $("<div>")
-        let todayHeader = $("<h3>");
-        todayHeader.html(cityName + " ("+ today + ") ") //+ icon
-        weatherToday.append(todayHeader);
-        todayHeader.attr("id", "todayHeader")
-        let todayTemp = $("<p>");
-        todayTemp.text("Temp: " + celsius +  "°c");
-        weatherToday.append(todayTemp);
-        let todayWind = $("<p>");
-        todayWind.text("Wind speed: " + wind + "KPH");
-        weatherToday.append(todayWind);
-        let todayHumidity= $("<p>");
-        todayHumidity.text("Humidity: " + humidity + "%");
-        weatherToday.append(todayHumidity);
-    todayWeather.append(weatherToday);
-
-
-}
-);
+        let todaysDate = response.list[0].dt_txt;
+    
+        let tempKelv = response.list[0].main.temp;
+        let celsius = (tempKelv - 273.15).toFixed(2);
+        // let weatherDescr = response.list[0].weather[0].description;
+        let wind = response.list[0].wind.speed;
+        let humidity =  response.list[0].main.humidity;
+        
+        const weatherToday = $("<div>")
+            let todayHeader = $("<h3>");
+            todayHeader.html(cityName + " ("+ today + ") ") //+ icon
+            weatherToday.append(todayHeader);
+            todayHeader.attr("id", "todayHeader")
+    
+            let todayTemp = $("<p>");
+            todayTemp.text("Temp: " + celsius +  "°c");
+            weatherToday.append(todayTemp);
+    
+            let todayWind = $("<p>");
+            todayWind.text("Wind speed: " + wind + "KPH");
+            weatherToday.append(todayWind);
+    
+            let todayHumidity= $("<p>");
+            todayHumidity.text("Humidity: " + humidity + "%");
+            weatherToday.append(todayHumidity);
+    
+        todayWeather.append(weatherToday);
+        });
+    })
 })
-let forecast = $("#forecast");
 
+
+//this doesnt work because of scope - returns blank. - had to be all wrapped in one function
+// console.log("Lat: " + lat);
+// console.log("Long: " + long);
+
+// cityCoord retrieves correct coords, but currently the weather search only returns for LONDON
+
+
+
+
+
+
+
+
+let forecast = $("#forecast");
+let fiveDayTitle = $("<h3>").addClass("fiveDayTitle");
+fiveDayTitle.text("5-Day Forecast:")
+todayWeather.after(fiveDayTitle);
+
+//currrently doesn't display this part:
+//need this on Click but okay!
 const days = [1, 2, 3, 4, 5]
 for (i = 0; i < days.length; i++) {
-    let forecastCard = $("<div>") //add class = card, width: 18rem
-        let cardBody = $("<div>") //add class card-body
-            let cardTitle = $("<h5>") //add class = card-title
-            //let cardIcon = $("<img>")
-            let cardTemp =  $("<p>"); // class = card.text
-            let cardWind =  $("<p>")
-            let cardHumidity =  $("<p>")
-
-            cardTitle.text("Date")
-            cardTemp.text("Temp: ")
-            cardWind.text("Wind: ")
-            cardHumidity.text("Humidity: ");
-
-
-
-
-
-            cardBody.append(cardTitle);
-            // cardBody.append(cardIcon)
-            cardBody.append(cardTemp);
-            cardBody.append(cardTemp);
-            cardBody.append(cardHumidity);
-        forecastCard.append(cardBody);
+    let forecastCard = $("<div>").addClass("card").addClass("col-sm-12").addClass("col-lg-2").addClass("col-md-3");
+        let cardTitle = $("<h5>").addClass("card-title");
+        let cardIcon = $("<p>");
+        let cardTemp =  $("<p>").addClass("card-text"); 
+        let cardWind =  $("<p>").addClass("card-text");
+        let cardHumidity =  $("<p>").addClass("card-text");
+        cardTitle.text("Date");
+        cardIcon.text("[ icon ]");
+        cardTemp.text("Temp: ");
+        cardWind.text("Wind: ");
+        cardHumidity.text("Humidity: ");
+        forecastCard.append(cardTitle);
+        forecastCard.append(cardIcon);
+        forecastCard.append(cardTemp);
+        forecastCard.append(cardWind);
+        forecastCard.append(cardHumidity);
     forecast.append(forecastCard);
+}
 
-
-
-}           
-/*for hero weather:
-city (date) icon
-temp to fixed 2
-wind
-humidity
-
-for weather cards:
+/* for weather cards:
 date (dd/m/yyyy)
 icon
 temp (c)
@@ -124,4 +133,3 @@ humidity (%)
 
 
 
-//geocoding "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5"
