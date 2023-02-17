@@ -1,6 +1,7 @@
 let searchBtn = $("#search-button");
 let searchInput = $("#search-input");
-let todayWeather = $("#today")
+let sideBar = $("#search-aside");
+let todayWeather = $("#today");
 let today = moment().format("D/MM/YYYY");
 
 
@@ -11,7 +12,16 @@ let day4 = moment().add(4, "days").format("D/MM/YYYY");
 let day5 = moment().add(5, "days").format("D/MM/YYYY");
 //push these to array and move through them
 
+//could make this a domino effect of consecutive functions:
+/*
+search.on("click", coordsFunction());
 
+coordsFunction() {
+showWeather();
+}
+
+etc.
+*/
 
 //end of first ajax, start second:
 searchBtn.on("click", function(event) {
@@ -25,11 +35,11 @@ searchBtn.on("click", function(event) {
         url: cityCoords,
         method: "GET"
     }).then(function(response) {
-    console.log(response);
+    // console.log(response);
     lat = response[0].lat;
     long = response[0].lon;
-    console.log(lat);
-    console.log(long);
+    // console.log(lat);
+    // console.log(long);
     // cityName = searchInput.val
         
     let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + long + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5";
@@ -38,8 +48,8 @@ searchBtn.on("click", function(event) {
         url: queryURL,
         method: "GET"
     }).then(function(response) {
-        console.log(response);
-        console.log(citySearch);
+        // console.log(response);
+        // console.log(citySearch);
         let cityName = response.city.name;
     
         let todaysDate = response.list[0].dt_txt;
@@ -70,16 +80,34 @@ searchBtn.on("click", function(event) {
     
         todayWeather.append(weatherToday);
         });
+        
+    makeButton();
     })
 })
 
 
-//this doesnt work because of scope - returns blank. - had to be all wrapped in one function
-// console.log("Lat: " + lat);
-// console.log("Long: " + long);
+//on click of search 
+function makeButton() {
 
-// cityCoord retrieves correct coords, but currently the weather search only returns for LONDON
+//create list in #search-aside
+    let buttonList = $("<div>");
+    sideBar.append(buttonList);
 
+    //li as button
+    let locationButton = $("<button>")
+    buttonList.append(locationButton);
+
+        //add place name
+    locationButton.text(searchInput.val())
+    locationButton.attr({
+        id: (searchInput.val() + "Btn"),
+        click: function(){
+            console.log("Hello " + searchInput.val() + "!");
+        }
+    })
+
+    //button on-click will trigger main search ajax function
+}
 
 
 
@@ -92,7 +120,7 @@ let fiveDayTitle = $("<h3>").addClass("fiveDayTitle");
 fiveDayTitle.text("5-Day Forecast:")
 todayWeather.after(fiveDayTitle);
 
-//currrently doesn't display this part:
+//currrently displays this part:
 //need this on Click but okay!
 const days = [1, 2, 3, 4, 5]
 for (i = 0; i < days.length; i++) {
@@ -122,7 +150,7 @@ temp (c)
 wind (KPH)
 humidity (%)
 */
-
+//Need to add actual content
 
     //ICONS
     // let iconDiv = $(".weather-icon");
