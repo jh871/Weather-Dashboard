@@ -1,3 +1,8 @@
+.btn {
+    border: 2px solid grey;
+    background-color: aqua;
+}
+
 #search-aside {
     border: 2px solid black;
 }
@@ -18,21 +23,26 @@
 }
 
 
-#forecast {
-    border: 2px solid black;
-}
-
-.card {
-    border: 2px solid black;
-    margin: 5px;
-    text-align: left;
-    padding: 0px;
-}
-
-/* .card-body {
-    padding: -5px;
-} */
 
 .fiveDayTitle {
     font-weight: 700;
 }
+
+#forecast {
+    justify-content: space-around;
+}
+
+.card {
+    text-align: left;
+    padding: 0px;
+    background-color: steelblue;
+    color: white;
+    padding: 5px;
+}
+
+
+.card-title {
+    font-weight: 600;
+}
+
+
