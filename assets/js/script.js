@@ -8,6 +8,9 @@ let todayWeather = $("#today");
 let citySearch;
 var lat;
 var long;
+let responseGrab; //saved response
+let day; //for card number
+let cardTimes; //to get weather from same interval on each card
 
 //todays weather
 let cityName;
@@ -55,14 +58,10 @@ function geoCode() {
         method: "GET"
     }).then(function(response) {
     // console.log(response);
-
     lat = (response[0].lat);
     long = (response[0].lon);
 
-    // lat.push(latResult);
-    // long.push(longResult);
     console.log(citySearch);
-
         getWeather()
     });
 };
@@ -78,8 +77,8 @@ function getWeather(){
         url: queryURL,
         method: "GET"
     }).then(function(response) {
-        console.log(response);
 
+        responseGrab = response;    
         cityName = response.city.name;
         todaysDate = response.list[0].dt_txt;
         tempKelv = response.list[0].main.temp;
@@ -87,6 +86,7 @@ function getWeather(){
         //weatherDescr = response.list[0].weather[0].description;
         wind = response.list[0].wind.speed;
         humidity =  response.list[0].main.humidity;
+
     showToday();
     });
 };
@@ -96,6 +96,8 @@ function getWeather(){
 
 //show Weather function
 function showToday() {
+    console.log(responseGrab);
+
     const weatherToday = $("<div>")
     let todayHeader = $("<h3>");
     let todayTemp = $("<p>");
@@ -114,7 +116,7 @@ function showToday() {
     weatherToday.append(todayHumidity);
     todayWeather.append(weatherToday);
 
-    // makeCards();
+    makeCards();
 }
 
 
@@ -140,41 +142,51 @@ function makeButton() {
 }
 
 
-//make cards function
-const days = [1, 2, 3, 4, 5];
-let cardTimes = [4, 12, 20, 28, 36];
-for (i = 0; i < days.length; i++) {
-    let dayX = moment().add(days[i], "days").format("D/MM/YYYY");
-    let forecastCard = $("<div>").addClass("card card1 col-sm-12 col-lg-2 col-md-3");
-    forecastCard.attr("id", "day"+(days[i]))
+
+
+function makeCards(){ 
+    day = 1;
+    cardTimes = [4, 12, 20, 28, 36];
+
+    for (let i = 0; i < cardTimes.length; i ++){
+    //moment.js
+        let dayX = moment().add(day, "days").format("D/MM/YYYY");
+    //create card
+        let forecastCard = $("<div>").addClass("card card1 col-sm-12 col-lg-2 col-md-3");
+    // give card ID
+        forecastCard.attr("id", "day"+(day))
 
 
 //designing cards:
-        let cardTitle = $("<h5>").addClass("card-title");
-        let cardIcon = $("<p>");
-        let cardTemp =  $("<p>").addClass("card-text");
-        let cardWind =  $("<p>").addClass("card-text");
-        let cardHumidity =  $("<p>").addClass("card-text");
+    let cardTitle = $("<h5>").addClass("card-title");
+    let cardIcon = $("<p>");
+    let cardTemp =  $("<p>").addClass("card-text");
+    let cardWind =  $("<p>").addClass("card-text");
+    let cardHumidity =  $("<p>").addClass("card-text");
+
+
+// grab info for cards
+    tempKelvFC = responseGrab.list[cardTimes[i]].main.temp;
+    celsiusFC = (tempKelv - 273.15).toFixed(2);
+    windFC = responseGrab.list[cardTimes[i]].wind.speed;
+    humidityFC =  responseGrab.list[cardTimes[i]].main.humidity;
+
 //setting card content:
-        cardTitle.text(dayX);
-        cardIcon.text("[ icon ]");
-        cardTemp.text("Temp: " + celsiusFC);
-        cardWind.text("Wind: " + windFC);
-        cardHumidity.text("Humidity: " + humidityFC);
+    cardTitle.text(dayX);
+    cardIcon.text("[ icon ]");
+    cardTemp.text("Temp: " + celsiusFC + "°c");
+    cardWind.text("Wind: " + windFC + "KPH");
+    cardHumidity.text("Humidity: " + humidityFC + "%");
 //appending cards:
-        forecastCard.append(cardTitle);
-        forecastCard.append(cardIcon);
-        forecastCard.append(cardTemp);
-        forecastCard.append(cardWind);
-        forecastCard.append(cardHumidity);
+    forecastCard.append(cardTitle);
+    forecastCard.append(cardIcon);
+    forecastCard.append(cardTemp);
+    forecastCard.append(cardWind);
+    forecastCard.append(cardHumidity);
     forecast.append(forecastCard);
 
-};
-
-console.log(cardTimes[0]);
-console.log(cardTimes[1]);
-console.log(cardTimes[2]);
-
+    day++
+}};
 
 //function to display weather from location button
 
@@ -188,40 +200,10 @@ console.log(cardTimes[2]);
 
 
 //SCRAPBOOK:
-
-//choosing correct stats for each day:
-// let x = 0;
-// if (i = 0){
-//     x = 4;
-// }  
-// if (i = 1){
-//     x = 12;
-// }
-// if (i = 2){
-//     x = 20;
-// }
-// if (i = 3){
-//     x = 28;
-// }
-// if (i = 4){
-//     x = 36;
-// }
-/*
-    let tempKelv = response.list[x].main.temp;
-    let celsiusFC = (tempKelv - 273.15).toFixed(2);
-        // let weatherDescr = response.list[x].weather[0].description;
-    let windFC = response.list[x].wind.speed;
-    let humidityFC =  response.list[x].main.humidity;
-
-        cardTitle.text(dayX);
-        cardIcon.text("[ icon ]");
-        cardTemp.text("Temp: " + celsiusFC);
-        cardWind.text("Wind: " + windFC);
-        cardHumidity.text("Humidity: " + humidityFC);
+// weatherDescr = response.list[x].weather[0].description;
 
 
-//need response to work in this scope
-*/
+
 
 /* for weather cards:
 date (dd/m/yyyy)
