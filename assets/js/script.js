@@ -62,7 +62,7 @@ function geoCode() {
     long = (response[0].lon);
 
     console.log(citySearch);
-        getWeather()
+        getWeather();
     });
 };
 
@@ -96,6 +96,7 @@ function getWeather(){
 
 //show Weather function
 function showToday() {
+    todayWeather.empty();
     console.log(responseGrab);
 
     const weatherToday = $("<div>")
@@ -116,7 +117,7 @@ function showToday() {
     weatherToday.append(todayHumidity);
     todayWeather.append(weatherToday);
 
-    makeCards();
+    makeCards(); 
 }
 
 
@@ -145,6 +146,7 @@ function makeButton() {
 
 
 function makeCards(){ 
+    forecast.empty();
     day = 1;
     cardTimes = [4, 12, 20, 28, 36];
 
