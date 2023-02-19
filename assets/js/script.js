@@ -11,8 +11,8 @@ var long;
 let responseGrab; //saved response
 let day; //for card number
 let cardTimes; //to get weather from same interval on each card
-var buttonList = $("<div>");
-sideBar.append(buttonList);
+var buttonList = $("#history");
+
 var locationButton;
 
 //todays weather
@@ -29,23 +29,8 @@ let celsiusFC = (tempKelvFC - 273.15).toFixed(2);
 let windFC;
 let humidityFC;
 
-//button for location history search
-let historyArray = JSON.parse(localStorage.getItem("searchLocation"));
-console.log(historyArray);
 
-// function makeButton() {
-historyArray.forEach(item => {
-    //create button
-    locationButton = $("<button>");
-    locationButton.click(prevSearch);
-    buttonList.append(locationButton);
-    //add place name
-    locationButton.text(item)
-    locationButton.attr("id", (item + "Btn"));
-});
 
-//object for ls for todays weather
-let locationsArr = [];
 
 
 //5-day forecast cards:
@@ -63,8 +48,35 @@ let day4 = moment().add(4, "days").format("D/MM/YYYY");
 let day5 = moment().add(5, "days").format("D/MM/YYYY");
 
 
-searchBtn.on("click", function runTest(event){
+//button for location history search
+let historyArray = JSON.parse(localStorage.getItem("searchLocation"));
+console.log(historyArray);
+makeHistoryButton();
+
+
+function makeHistoryButton() {
+    if (historyArray !== null) {
+    historyArray.forEach(item => {
+    //create button
+    locationButton = $("<button>");
+    locationButton.click(prevSearch);
+    buttonList.append(locationButton);
+    //add place name
+    locationButton.text(item)
+    locationButton.attr("id", (item + "Btn"));
+    })};
+};
+
+
+//object for ls for todays weather
+let locationsArr = [];
+
+//search function:
+searchBtn.on("click", runSearch);
+
+function runSearch(event) {
     event.preventDefault();
+    citySearch = searchInput.val();
     const storageTest = localStorage.getItem("searchLocation");
     if (storageTest !== null) {
     locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
@@ -72,11 +84,13 @@ searchBtn.on("click", function runTest(event){
     locationsArr.push(searchInput.val());
     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
     geoCode();
-});
+}
+
+
+
 
 //Geocoding function
 function geoCode() {
-    citySearch = searchInput.val();
     let cityCoords = "https://api.openweathermap.org/geo/1.0/direct?q="+citySearch+"&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5"
     $.ajax({
         url: cityCoords,
@@ -193,19 +207,25 @@ function makeCards(){
 
 //make Buttons function
 //on click of search 
-
+// function updateButtons() {
+//     buttonList.load(window.location.href + " buttonList")
+// }
 
 
 //function to display weather from location button -- this works ans is called correctly
 function prevSearch(event) {
     event.preventDefault();
-    console.log("The button works"); //it does!
+    let searchText = $(this).text();
+    console.log(searchText);
+    searchInput.val(searchText);
+    console.log("The button works");//it does!
+    runSearch(event); 
 };
 
 // CURRENT ISSUES:
 // making duplicate buttons from search;
 // buttons generated only on refresh and not on search
-// buttons just log a little message, don't trigger results
+// SOMETIMES running ls twice just keeps adding buttons - need to clear div between runs??
 
 
 //SCRAPBOOK:
