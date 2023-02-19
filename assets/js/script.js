@@ -12,6 +12,8 @@ let responseGrab; //saved response
 let day; //for card number
 let cardTimes; //to get weather from same interval on each card
 var buttonList = $("#history");
+let historyTitle = $("<h4>");
+historyTitle.text("Recent searches: ");
 
 var locationButton;
 
@@ -39,7 +41,7 @@ let iconFC;
 let forecast = $("#forecast");
 let fiveDayTitle = $("<h3>").addClass("fiveDayTitle");
 fiveDayTitle.text("5-Day Forecast:")
-todayWeather.after(fiveDayTitle);
+
 
 //moment.js for dates:
 let today = moment().format("D/MM/YYYY");
@@ -57,8 +59,9 @@ makeHistoryButton();
 
 
 function makeHistoryButton() {
+    buttonList.empty();
+    
     if (historyArray !== null) {
-        buttonList.empty();
     historyArray.forEach(item => {
     //create button
     
@@ -68,6 +71,8 @@ function makeHistoryButton() {
     //add place name
     locationButton.text(item)
     locationButton.attr("id", (item + "Btn"));
+
+    buttonList.before(historyTitle);
     })};
 };
 
@@ -146,9 +151,9 @@ function showToday() {
 
     const weatherToday = $("<div>")
     let todayHeader = $("<h3>");
-    let todayTemp = $("<p>");
-    let todayWind = $("<p>");
-    let todayHumidity= $("<p>");
+    let todayTemp = $("<p>").attr("id", "today-temp").addClass("today-text");
+    let todayWind = $("<p>").attr("id", "today-wind").addClass("today-text");
+    let todayHumidity= $("<p>").attr("id", "today-humid").addClass("today-text");
     let iconDiv = $("<img>");
 
     todayHeader.html(cityName + " ("+ today + ") ") //+ icon
@@ -178,6 +183,7 @@ function showToday() {
 
 
 function makeCards(){ 
+    todayWeather.after(fiveDayTitle);
     forecast.empty();
     day = 1;
     cardTimes = [4, 12, 20, 28, 36];
@@ -243,13 +249,13 @@ function prevSearch(event) {
 };
 
 // CURRENT ISSUES:
-// making duplicate buttons from search;
+// making duplicate buttons from search - // SOMETIMES running ls twice just keeps adding buttons - need to clear div between runs?? - clicking hisotry button adds it to local storage. Might need to pop it from hisory Array
 // buttons generated only on refresh and not on search
-// SOMETIMES running ls twice just keeps adding buttons - need to clear div between runs??
 
-//Next:
-// - icons
-// - search history title
+
+//Next: 
+// - stop button click adding to ls
+// - generage buttons on search click and not just refresh.
 
 
 //SCRAPBOOK:
