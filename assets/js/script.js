@@ -22,6 +22,7 @@ let tempKelv;
 let celsius;
 let wind;
 let humidity;
+let todayIconCode;
 
 //forecast cards
 let tempKelvFC;
@@ -56,8 +57,10 @@ makeHistoryButton();
 
 function makeHistoryButton() {
     if (historyArray !== null) {
+        buttonList.empty();
     historyArray.forEach(item => {
     //create button
+    
     locationButton = $("<button>");
     locationButton.click(prevSearch);
     buttonList.append(locationButton);
@@ -72,14 +75,14 @@ function makeHistoryButton() {
 let locationsArr = [];
 
 //search function:
-searchBtn.on("click", runSearch);
+searchBtn.on("click", runSearch, makeHistoryButton());
 
 function runSearch(event) {
     event.preventDefault();
     citySearch = searchInput.val();
     const storageTest = localStorage.getItem("searchLocation");
     if (storageTest !== null) {
-    locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
+        locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
     };
     locationsArr.push(searchInput.val());
     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
@@ -111,7 +114,7 @@ function geoCode() {
 function getWeather(){
     console.log("next: " + lat);
     console.log("next: " + long);
-    let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + long + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5";
+    let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + long + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5&units=metric";
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -120,16 +123,19 @@ function getWeather(){
         responseGrab = response;  
         cityName = response.city.name;
         todaysDate = response.list[0].dt_txt;
-        tempKelv = response.list[0].main.temp;
-        celsius = (tempKelv - 273.15).toFixed(2);
-        //weatherDescr = response.list[0].weather[0].description;
+        
+        celsius = (response.list[0].main.temp).toFixed(1);
+        todayIconCode = response.list[0].weather[0].icon;
+        console.log(todayIconCode);
+
+
         wind = response.list[0].wind.speed;
         humidity =  response.list[0].main.humidity;
     showToday();
     });
 };
 
-//just put name of city button back into ajax search.
+
 
 
 //show Weather function
@@ -142,18 +148,25 @@ function showToday() {
     let todayTemp = $("<p>");
     let todayWind = $("<p>");
     let todayHumidity= $("<p>");
+    let iconDiv = $("<img>");
 
     todayHeader.html(cityName + " ("+ today + ") ") //+ icon
+    let iconURL = "https://openweathermap.org/img/wn/" + todayIconCode + "@2x.png";
     todayHeader.attr("id", "todayHeader")
     todayTemp.text("Temp: " + celsius +  "°c");
     todayWind.text("Wind speed: " + wind + "KPH")
     todayHumidity.text("Humidity: " + humidity + "%");
 
     weatherToday.append(todayHeader);
+    
     weatherToday.append(todayTemp);
     weatherToday.append(todayWind);
     weatherToday.append(todayHumidity);
     todayWeather.append(weatherToday);
+
+    iconDiv.attr("src", iconURL);
+    todayHeader.append(iconDiv)
+
 
     makeCards(); 
 }
@@ -182,8 +195,10 @@ function makeCards(){
 
 
 // grab info for cards
-    tempKelvFC = responseGrab.list[cardTimes[i]].main.temp;
-    celsiusFC = (tempKelv - 273.15).toFixed(2);
+    // tempKelvFC = responseGrab.list[cardTimes[i]].main.temp;
+    // celsiusFC = (tempKelv - 273.15).toFixed(2);
+
+    celsiusFC = (responseGrab.list[cardTimes[i]].main.temp).toFixed(1);
     windFC = responseGrab.list[cardTimes[i]].wind.speed;
     humidityFC =  responseGrab.list[cardTimes[i]].main.humidity;
 
@@ -227,12 +242,13 @@ function prevSearch(event) {
 // buttons generated only on refresh and not on search
 // SOMETIMES running ls twice just keeps adding buttons - need to clear div between runs??
 
+//Next:
+// - icons
+// - search history title
+
 
 //SCRAPBOOK:
 // weatherDescr = response.list[x].weather[0].description;
 
     //ICONS
-    // let iconDiv = $(".weather-icon");
-    // let todayIcon = response.list[0].weather[0].icon;
-    // let iconURL = "https://openweathermap.org/img/wn/" + todayIcon + "@2x.png"
-    // iconDiv.html("<img src=" + iconURL + "/ >")
+
