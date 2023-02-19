@@ -29,6 +29,7 @@ let tempKelvFC;
 let celsiusFC = (tempKelvFC - 273.15).toFixed(2);
 let windFC;
 let humidityFC;
+let iconFC;
 
 
 
@@ -158,7 +159,6 @@ function showToday() {
     todayHumidity.text("Humidity: " + humidity + "%");
 
     weatherToday.append(todayHeader);
-    
     weatherToday.append(todayTemp);
     weatherToday.append(todayWind);
     weatherToday.append(todayHumidity);
@@ -167,9 +167,14 @@ function showToday() {
     iconDiv.attr("src", iconURL);
     todayHeader.append(iconDiv)
 
-
     makeCards(); 
 }
+
+
+
+
+
+
 
 
 function makeCards(){ 
@@ -188,23 +193,23 @@ function makeCards(){
 
 //designing cards:
     let cardTitle = $("<h5>").addClass("card-title");
-    let cardIcon = $("<p>");
+    let cardIcon = $("<img>");
     let cardTemp =  $("<p>").addClass("card-text");
     let cardWind =  $("<p>").addClass("card-text");
     let cardHumidity =  $("<p>").addClass("card-text");
 
 
 // grab info for cards
-    // tempKelvFC = responseGrab.list[cardTimes[i]].main.temp;
-    // celsiusFC = (tempKelv - 273.15).toFixed(2);
-
     celsiusFC = (responseGrab.list[cardTimes[i]].main.temp).toFixed(1);
     windFC = responseGrab.list[cardTimes[i]].wind.speed;
     humidityFC =  responseGrab.list[cardTimes[i]].main.humidity;
+    iconFC = responseGrab.list[cardTimes[i]].weather[0].icon;
+    let iconURL = "https://openweathermap.org/img/wn/" + iconFC + "@2x.png";
+
 
 //setting card content:
     cardTitle.text(dayX);
-    cardIcon.text("[ icon ]");
+    cardIcon.attr("src", iconURL);
     cardTemp.text("Temp: " + celsiusFC + "°c");
     cardWind.text("Wind: " + windFC + "KPH");
     cardHumidity.text("Humidity: " + humidityFC + "%");
