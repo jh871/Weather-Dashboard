@@ -11,22 +11,41 @@ var long;
 let responseGrab; //saved response
 let day; //for card number
 let cardTimes; //to get weather from same interval on each card
+var buttonList = $("<div>");
+sideBar.append(buttonList);
+var locationButton;
 
 //todays weather
 let cityName;
 let todaysDate;
 let tempKelv;
 let celsius;
-// let weatherDescr;
 let wind;
 let humidity;
 
 //forecast cards
 let tempKelvFC;
 let celsiusFC = (tempKelvFC - 273.15).toFixed(2);
-    // let weatherDescr = response.list[x].weather[0].description;
 let windFC;
 let humidityFC;
+
+//button for location history search
+let historyArray = JSON.parse(localStorage.getItem("searchLocation"));
+console.log(historyArray);
+
+// function makeButton() {
+historyArray.forEach(item => {
+    //create button
+    locationButton = $("<button>");
+    locationButton.click(prevSearch);
+    buttonList.append(locationButton);
+    //add place name
+    locationButton.text(item)
+    locationButton.attr("id", (item + "Btn"));
+});
+
+//object for ls for todays weather
+let locationsArr = [];
 
 
 //5-day forecast cards:
@@ -46,7 +65,13 @@ let day5 = moment().add(5, "days").format("D/MM/YYYY");
 
 searchBtn.on("click", function runTest(event){
     event.preventDefault();
-    geoCode(); makeButton();
+    const storageTest = localStorage.getItem("searchLocation");
+    if (storageTest !== null) {
+    locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
+    };
+    locationsArr.push(searchInput.val());
+    localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
+    geoCode();
 });
 
 //Geocoding function
@@ -77,8 +102,8 @@ function getWeather(){
         url: queryURL,
         method: "GET"
     }).then(function(response) {
-
-        responseGrab = response;    
+    
+        responseGrab = response;  
         cityName = response.city.name;
         todaysDate = response.list[0].dt_txt;
         tempKelv = response.list[0].main.temp;
@@ -86,12 +111,11 @@ function getWeather(){
         //weatherDescr = response.list[0].weather[0].description;
         wind = response.list[0].wind.speed;
         humidity =  response.list[0].main.humidity;
-
     showToday();
     });
 };
 
-
+//just put name of city button back into ajax search.
 
 
 //show Weather function
@@ -119,30 +143,6 @@ function showToday() {
 
     makeCards(); 
 }
-
-
-//make Buttons function
-//on click of search 
-function makeButton() {
-    //create list div in #search-aside
-    let buttonList = $("<div>");
-    let locationButton = $("<button>");
-
-    sideBar.append(buttonList);
-    buttonList.append(locationButton);
-    
-    //add place name
-    locationButton.text(searchInput.val())
-    locationButton.attr({
-        id: (searchInput.val() + "Btn"),
-        click: function(){
-            console.log("Hello " + searchInput.val() + "!");
-        }
-    })
-    // locationButton.on("click", function);
-}
-
-
 
 
 function makeCards(){ 
@@ -190,46 +190,29 @@ function makeCards(){
     day++
 }};
 
-//function to display weather from location button
+
+//make Buttons function
+//on click of search 
 
 
 
-//local storage
+//function to display weather from location button -- this works ans is called correctly
+function prevSearch(event) {
+    event.preventDefault();
+    console.log("The button works"); //it does!
+};
 
-
-
-
+// CURRENT ISSUES:
+// making duplicate buttons from search;
+// buttons generated only on refresh and not on search
+// buttons just log a little message, don't trigger results
 
 
 //SCRAPBOOK:
 // weatherDescr = response.list[x].weather[0].description;
-
-
-
-
-/* for weather cards:
-date (dd/m/yyyy)
-icon
-temp (c)
-wind (KPH)
-humidity (%)
-*/
-//Need to add actual content
-
 
     //ICONS
     // let iconDiv = $(".weather-icon");
     // let todayIcon = response.list[0].weather[0].icon;
     // let iconURL = "https://openweathermap.org/img/wn/" + todayIcon + "@2x.png"
     // iconDiv.html("<img src=" + iconURL + "/ >")
-
-//could make this a domino effect of consecutive functions:
-/*
-search.on("click", coordsFunction());
-
-coordsFunction() {
-showWeather();
-}
-
-etc.
-*/
