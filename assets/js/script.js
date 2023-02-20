@@ -93,17 +93,27 @@ function runSearch(event) {
     // if (storageTest !== null) {
     //     locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
     // };
-    console.log(buttonList);
     locationsArr.push(citySearch);
+
     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
     
     searchInput.value = "";
     geoCode(); makeHistoryButton();
 }
+/////////////////////////////////////
 
+function searchFromHistory(event) {
+    event.target
+}
+//function to display weather from location button -- this works ans is called correctly
+function prevSearch(event) {
+    // event.preventDefault();
+    citySearch = $(this).text();
+    searchInput.val(citySearch);
+    geoCode();
+};
 
-
-
+///////////////////////////////////
 //Geocoding function
 function geoCode() {
     let cityCoords = "https://api.openweathermap.org/geo/1.0/direct?q="+citySearch+"&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5"
@@ -228,16 +238,6 @@ function makeCards(){
 
 
 
-
-//function to display weather from location button -- this works ans is called correctly
-function prevSearch(event) {
-    // event.preventDefault();
-    let searchText = $(this).text();
-    console.log(searchText);
-    searchInput.val(searchText);
-    console.log("The button works");//it does!
-    runSearch(event); 
-};
 
 
 //clear button:
