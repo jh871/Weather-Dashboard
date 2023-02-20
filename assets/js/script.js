@@ -57,21 +57,25 @@ function getHistory(){
 
     historyArr = JSON.parse(localStorage.getItem("searchLocation"));
     console.log(historyArr);
+    
+    console.log("locations array here: " + locationsArr);
     if (historyArr !== null) {
+        locationsArr = historyArr;
         makeHistoryButton();
     }
 };
 
 
 
-
-
-
-//////////
 function makeHistoryButton() {
     buttonList.empty();
+    console.log("history array: " + historyArr);
+    console.log("locations array: " + locationsArr);
+
     
     locationsArr = historyArr;
+    console.log("locations array now: " + locationsArr);
+    // historyArr = locationsArr;
     if (locationsArr !== null) {
     locationsArr.forEach(item => {
     //create button
@@ -88,41 +92,6 @@ function makeHistoryButton() {
 };
 
 
-
-
-// function makeHistoryButton() {
-//     buttonList.empty();
-//     // locationsArr = [];
-//     const storageTest = localStorage.getItem("searchLocation");
-//     if (storageTest !== null) {
-//         locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
-//     };
-//     //only push if content
-//     if (citySearch !== ""){
-//     locationsArr.push(citySearch);
-//     }
-//     //generate new button - separate function
-//     locationsArr.forEach(item => 
-//     //create button
-//     generateButton()
-//     );
-//     buttonList.before(historyTitle);
-//     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
-// };
-
-// function generateButton() {
-//     locationButton = $("<button>");
-//     locationButton.click(prevSearch);
-//     buttonList.append(locationButton);
-//     //add place name
-//     locationButton.text(citySearch);
-//     locationButton.attr("id", (citySearch + "Btn"));
-//     };
-
-
-
-/////////////////
-
 //primary search event listener:
 searchBtn.on("click", runSearch);
 
@@ -130,11 +99,12 @@ searchBtn.on("click", runSearch);
 function runSearch(event) {
     event.preventDefault();
     citySearch = searchInput.val();
-    const storageTest = localStorage.getItem("searchLocation");
-//     if (storageTest !== null) {
-//         locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
-//     };
+    // const storageTest = localStorage.getItem("searchLocation");
+    // if (storageTest !== null) {
+        // locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
+    // };
     locationsArr.push(citySearch);
+    historyArr = locationsArr;
     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
     
     geoCode(); makeHistoryButton();
