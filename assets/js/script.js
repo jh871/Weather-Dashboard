@@ -12,8 +12,10 @@ let responseGrab; //saved response
 let day; //for card number
 let cardTimes; //to get weather from same interval on each card
 var buttonList = $("#history");
-
+let historyTitle = $("<h4>");
+historyTitle.text("Recent searches: ");
 var locationButton;
+let locationsArr = [];
 
 //todays weather
 let cityName;
@@ -31,15 +33,10 @@ let windFC;
 let humidityFC;
 let iconFC;
 
-
-
-
-
 //5-day forecast cards:
 let forecast = $("#forecast");
 let fiveDayTitle = $("<h3>").addClass("fiveDayTitle");
 fiveDayTitle.text("5-Day Forecast:")
-todayWeather.after(fiveDayTitle);
 
 //moment.js for dates:
 let today = moment().format("D/MM/YYYY");
@@ -51,15 +48,25 @@ let day5 = moment().add(5, "days").format("D/MM/YYYY");
 
 
 //button for location history search
-let historyArray = JSON.parse(localStorage.getItem("searchLocation"));
-console.log(historyArray);
-makeHistoryButton();
+$(document).ready(getHistory());
 
+
+
+
+function getHistory(){
+    let historyArr = [];
+    historyArr = JSON.parse(localStorage.getItem("searchLocation"));
+    console.log(historyArr);
+    if (historyArr !== null) {
+        makeHistoryButton();
+    }
+};
 
 function makeHistoryButton() {
-    if (historyArray !== null) {
-        buttonList.empty();
-    historyArray.forEach(item => {
+    buttonList.empty();
+    
+    if (locationsArr !== null) {
+    locationsArr.forEach(item => {
     //create button
     
     locationButton = $("<button>");
@@ -68,31 +75,45 @@ function makeHistoryButton() {
     //add place name
     locationButton.text(item)
     locationButton.attr("id", (item + "Btn"));
+
+    buttonList.before(historyTitle);
     })};
 };
 
 
-//object for ls for todays weather
-let locationsArr = [];
+
 
 //search function:
-searchBtn.on("click", runSearch, makeHistoryButton());
+searchBtn.on("click", runSearch);
 
 function runSearch(event) {
     event.preventDefault();
     citySearch = searchInput.val();
-    const storageTest = localStorage.getItem("searchLocation");
-    if (storageTest !== null) {
-        locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
-    };
-    locationsArr.push(searchInput.val());
+    // const storageTest = localStorage.getItem("searchLocation");
+    // if (storageTest !== null) {
+    //     locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
+    // };
+    locationsArr.push(citySearch);
+
     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
-    geoCode();
+    
+    searchInput.value = "";
+    geoCode(); makeHistoryButton();
 }
+/////////////////////////////////////
 
+function searchFromHistory(event) {
+    event.target
+}
+//function to display weather from location button -- this works ans is called correctly
+function prevSearch(event) {
+    // event.preventDefault();
+    citySearch = $(this).text();
+    searchInput.val(citySearch);
+    geoCode();
+};
 
-
-
+///////////////////////////////////
 //Geocoding function
 function geoCode() {
     let cityCoords = "https://api.openweathermap.org/geo/1.0/direct?q="+citySearch+"&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5"
@@ -100,12 +121,9 @@ function geoCode() {
         url: cityCoords,
         method: "GET"
     }).then(function(response) {
-    // console.log(response);
     lat = (response[0].lat);
     long = (response[0].lon);
-
-    console.log(citySearch);
-        getWeather();
+    getWeather();
     });
 };
 
@@ -113,8 +131,6 @@ function geoCode() {
 
 //get Weather function
 function getWeather(){
-    console.log("next: " + lat);
-    console.log("next: " + long);
     let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + long + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5&units=metric";
     $.ajax({
         url: queryURL,
@@ -127,8 +143,6 @@ function getWeather(){
         
         celsius = (response.list[0].main.temp).toFixed(1);
         todayIconCode = response.list[0].weather[0].icon;
-        console.log(todayIconCode);
-
 
         wind = response.list[0].wind.speed;
         humidity =  response.list[0].main.humidity;
@@ -142,13 +156,12 @@ function getWeather(){
 //show Weather function
 function showToday() {
     todayWeather.empty();
-    console.log(responseGrab);
 
     const weatherToday = $("<div>")
     let todayHeader = $("<h3>");
-    let todayTemp = $("<p>");
-    let todayWind = $("<p>");
-    let todayHumidity= $("<p>");
+    let todayTemp = $("<p>").attr("id", "today-temp").addClass("today-text");
+    let todayWind = $("<p>").attr("id", "today-wind").addClass("today-text");
+    let todayHumidity= $("<p>").attr("id", "today-humid").addClass("today-text");
     let iconDiv = $("<img>");
 
     todayHeader.html(cityName + " ("+ today + ") ") //+ icon
@@ -173,11 +186,9 @@ function showToday() {
 
 
 
-
-
-
-
+//makes cards
 function makeCards(){ 
+    todayWeather.after(fiveDayTitle);
     forecast.empty();
     day = 1;
     cardTimes = [4, 12, 20, 28, 36];
@@ -221,39 +232,24 @@ function makeCards(){
     forecastCard.append(cardHumidity);
     forecast.append(forecastCard);
 
-    day++
-}};
-
-
-//make Buttons function
-//on click of search 
-// function updateButtons() {
-//     buttonList.load(window.location.href + " buttonList")
-// }
-
-
-//function to display weather from location button -- this works ans is called correctly
-function prevSearch(event) {
-    event.preventDefault();
-    let searchText = $(this).text();
-    console.log(searchText);
-    searchInput.val(searchText);
-    console.log("The button works");//it does!
-    runSearch(event); 
+    day++; 
+    }
 };
 
-// CURRENT ISSUES:
-// making duplicate buttons from search;
-// buttons generated only on refresh and not on search
-// SOMETIMES running ls twice just keeps adding buttons - need to clear div between runs??
-
-//Next:
-// - icons
-// - search history title
 
 
-//SCRAPBOOK:
-// weatherDescr = response.list[x].weather[0].description;
 
-    //ICONS
+
+//clear button:
+let clearBtn = $("<button>");
+clearBtn.attr("id", "clear-button");
+clearBtn.text("Clear history");
+sideBar.append(clearBtn);
+
+clearBtn.on("click", function(event){
+    localStorage.clear();
+    buttonList.empty();
+    locationsArr = [];
+    historyArr = [];
+})
 
