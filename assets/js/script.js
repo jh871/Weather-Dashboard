@@ -16,6 +16,7 @@ let historyTitle = $("<h4>");
 historyTitle.text("Recent searches: ");
 var locationButton;
 let locationsArr = [];
+let historyArr = [];
 
 //todays weather
 let cityName;
@@ -47,14 +48,13 @@ let day4 = moment().add(4, "days").format("D/MM/YYYY");
 let day5 = moment().add(5, "days").format("D/MM/YYYY");
 
 
-//button for location history search
+// button for location history search
 $(document).ready(getHistory());
 
 
-
-
 function getHistory(){
-    let historyArr = [];
+    buttonList.empty();
+
     historyArr = JSON.parse(localStorage.getItem("searchLocation"));
     console.log(historyArr);
     if (historyArr !== null) {
@@ -62,9 +62,16 @@ function getHistory(){
     }
 };
 
+
+
+
+
+
+//////////
 function makeHistoryButton() {
     buttonList.empty();
     
+    locationsArr = historyArr;
     if (locationsArr !== null) {
     locationsArr.forEach(item => {
     //create button
@@ -83,29 +90,59 @@ function makeHistoryButton() {
 
 
 
-//search function:
+// function makeHistoryButton() {
+//     buttonList.empty();
+//     // locationsArr = [];
+//     const storageTest = localStorage.getItem("searchLocation");
+//     if (storageTest !== null) {
+//         locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
+//     };
+//     //only push if content
+//     if (citySearch !== ""){
+//     locationsArr.push(citySearch);
+//     }
+//     //generate new button - separate function
+//     locationsArr.forEach(item => 
+//     //create button
+//     generateButton()
+//     );
+//     buttonList.before(historyTitle);
+//     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
+// };
+
+// function generateButton() {
+//     locationButton = $("<button>");
+//     locationButton.click(prevSearch);
+//     buttonList.append(locationButton);
+//     //add place name
+//     locationButton.text(citySearch);
+//     locationButton.attr("id", (citySearch + "Btn"));
+//     };
+
+
+
+/////////////////
+
+//primary search event listener:
 searchBtn.on("click", runSearch);
+
 
 function runSearch(event) {
     event.preventDefault();
     citySearch = searchInput.val();
-    // const storageTest = localStorage.getItem("searchLocation");
-    // if (storageTest !== null) {
-    //     locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
-    // };
+    const storageTest = localStorage.getItem("searchLocation");
+//     if (storageTest !== null) {
+//         locationsArr = JSON.parse(localStorage.getItem("searchLocation"));
+//     };
     locationsArr.push(citySearch);
-
     localStorage.setItem("searchLocation", JSON.stringify(locationsArr));
     
-    searchInput.value = "";
     geoCode(); makeHistoryButton();
 }
-/////////////////////////////////////
 
-function searchFromHistory(event) {
-    event.target
-}
-//function to display weather from location button -- this works ans is called correctly
+
+
+//function to display weather from location button
 function prevSearch(event) {
     // event.preventDefault();
     citySearch = $(this).text();
@@ -113,9 +150,10 @@ function prevSearch(event) {
     geoCode();
 };
 
-///////////////////////////////////
+
 //Geocoding function
 function geoCode() {
+    searchInput.value = "";
     let cityCoords = "https://api.openweathermap.org/geo/1.0/direct?q="+citySearch+"&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5"
     $.ajax({
         url: cityCoords,
@@ -131,6 +169,7 @@ function geoCode() {
 
 //get Weather function
 function getWeather(){
+    // searchInput.val("");
     let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + long + "&appid=24b0bccae4dbb8bd3aef5fad1d1c5cf5&units=metric";
     $.ajax({
         url: queryURL,
@@ -185,8 +224,7 @@ function showToday() {
 
 
 
-
-//makes cards
+//makes cards for 5-day forecast
 function makeCards(){ 
     todayWeather.after(fiveDayTitle);
     forecast.empty();
@@ -202,7 +240,7 @@ function makeCards(){
         forecastCard.attr("id", "day"+(day))
 
 
-//designing cards:
+// designing cards:
     let cardTitle = $("<h5>").addClass("card-title");
     let cardIcon = $("<img>");
     let cardTemp =  $("<p>").addClass("card-text");
@@ -218,13 +256,13 @@ function makeCards(){
     let iconURL = "https://openweathermap.org/img/wn/" + iconFC + "@2x.png";
 
 
-//setting card content:
+// setting card content:
     cardTitle.text(dayX);
     cardIcon.attr("src", iconURL);
     cardTemp.text("Temp: " + celsiusFC + "°c");
     cardWind.text("Wind: " + windFC + "KPH");
     cardHumidity.text("Humidity: " + humidityFC + "%");
-//appending cards:
+// appending cards:
     forecastCard.append(cardTitle);
     forecastCard.append(cardIcon);
     forecastCard.append(cardTemp);
@@ -235,9 +273,6 @@ function makeCards(){
     day++; 
     }
 };
-
-
-
 
 
 //clear button:
