@@ -26,6 +26,8 @@
 .today-text {
     font-size: 1.5rem;
 }
+
+
 /* forecast cards */
 .fiveDayTitle {
     font-weight: 700;
@@ -42,7 +44,6 @@
     color: white;
     padding: 5px;
 }
-
 
 .card-title {
     font-weight: 600;
