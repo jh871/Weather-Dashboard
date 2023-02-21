@@ -1,7 +1,12 @@
+/* Not to blame my tools here but whatever stylesheets were on this as starter code keep kicking off in my console and there's a lot of default classes at work here that aren't taking well to being overwritten. Any feedback on working with this in particular would be greatly appreciated. */
+body {
+    background: linear-gradient(to bottom, #3889d4 0%, #fCA321 100%);
+}
 
 .weather-header {
     background-color: #3889d4 !important;
 }
+
 
 #search-aside {
     /* border: 2px solid black; */
@@ -87,18 +92,19 @@
     text-align: center;
 };
 
-
+/*  This isn't doing anything...  */
 .btn-primary {
     background: #6d7781;
     border: none;
-
 }
 
+/*  ...but this works  */
 .location-button:hover {
     background-color: rgb(35, 64, 87);
     color: #fCA321;
     border: none;
 }
+
 
 #clear-button {
     min-width: 220px;
