@@ -13,6 +13,7 @@ let day; //for card number
 let cardTimes; //to get weather from same interval on each card
 var buttonList = $("#history");
 let historyTitle = $("<h4>");
+historyTitle.attr("id", "recent-header")
 historyTitle.html('<i class="fa-solid fa-clock-rotate-left"></i>  Recent searches:');
 var locationButton;
 let locationsArr = [];
@@ -85,8 +86,8 @@ function makeHistoryButton() {
     buttonList.append(locationButton);
     //add place name
     locationButton.text(item)
-    locationButton.attr("id", (item + "Btn"));
-    locationButton.addClass("location-button")
+    locationButton.attr("role", "button");
+    locationButton.addClass("location-button btn-primary")
 
     buttonList.before(historyTitle);
     })};

@@ -1,6 +1,3 @@
-/* .btn {
-    
-} */
 
 .weather-header {
     background-color: #3889d4 !important;
@@ -8,7 +5,7 @@
 
 #search-aside {
     /* border: 2px solid black; */
-    background: linear-gradient(to bottom, #3889d4 0%, #fCA321 100%)
+    background: linear-gradient(to bottom, #3889d4 0%, #fCA321 100%);
 }
 
 #forecast-display {
@@ -85,12 +82,35 @@
 }
 
 /*  recent searches  */
-h4 {
-    font-weight: 500;
+#recent-header {
+    font-weight: 600;
     text-align: center;
+};
+
+
+.btn-primary {
+    background: #6d7781;
+    border: none;
+
 }
 
+.location-button:hover {
+    background-color: rgb(35, 64, 87);
+    color: #fCA321;
+    border: none;
+}
 
-
-
+#clear-button {
+    min-width: 220px;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    border: none;
+padding: 5px;
+margin-left: 10px;
+    align-self: center;
+    justify-self: center;
+}
+.fa-trash-can {
+    color: red;
+}
 /*    */
