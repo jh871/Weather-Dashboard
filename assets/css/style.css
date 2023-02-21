@@ -2,7 +2,7 @@
 body {
     background: linear-gradient(to bottom, #3889d4 0%, #fCA321 100%);
     background-repeat: no-repeat;
-}
+};
 
 .weather-header {
     background-color: #3889d4 !important;
