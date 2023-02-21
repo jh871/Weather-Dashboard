@@ -13,7 +13,8 @@ let day; //for card number
 let cardTimes; //to get weather from same interval on each card
 var buttonList = $("#history");
 let historyTitle = $("<h4>");
-historyTitle.text("Recent searches: ");
+historyTitle.attr("id", "recent-header")
+historyTitle.html('<i class="fa-solid fa-clock-rotate-left"></i>  Recent searches:');
 var locationButton;
 let locationsArr = [];
 let historyArr = [];
@@ -85,7 +86,8 @@ function makeHistoryButton() {
     buttonList.append(locationButton);
     //add place name
     locationButton.text(item)
-    locationButton.attr("id", (item + "Btn"));
+    locationButton.attr("role", "button");
+    locationButton.addClass("location-button btn-primary")
 
     buttonList.before(historyTitle);
     })};
@@ -248,7 +250,7 @@ function makeCards(){
 //clear button:
 let clearBtn = $("<button>");
 clearBtn.attr("id", "clear-button");
-clearBtn.text("Clear history");
+clearBtn.html('<i class="fa-regular fa-trash-can"></i> Clear history');
 sideBar.append(clearBtn);
 
 clearBtn.on("click", function(event){
